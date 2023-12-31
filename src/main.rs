@@ -176,7 +176,7 @@ async fn handle_request(req: Request<Body>, pool: Pool) -> Result<Response<Body>
             drop(conn);
             Ok(response_build(serde_json::to_string(&orders)?.as_str()))
             // Ok(Response::new(Body::from(serde_json::to_string(&orders)?)))
-        }        
+        }
         
         (&Method::GET, "/delete_order") => {
             let mut conn = pool.get_conn().await.unwrap();
@@ -217,6 +217,8 @@ fn response_build(body: &str) -> Response<Body> {
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    // SLAM: logging conn
+    println!("db conn string {:?}", &*get_url());
     let opts = Opts::from_url(&*get_url()).unwrap();
     let builder = OptsBuilder::from_opts(opts);
     // The connection pool will have a min of 5 and max of 10 connections.
